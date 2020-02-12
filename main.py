@@ -8,41 +8,41 @@ app = Flask(__name__)
 @app.route('/')
 def home():
 
-    conn = psycopg2.connect("dbname = 'd2olmc1g1ep2um' user='lbklkxnrccbafn' host='ec2-18-210-51-239.compute-1.amazonaws.com' password='9ba141e9e03ccd7f51b9f445e0a471ae284159ab97b3997b85e6367a2417634c'")
+    # conn = psycopg2.connect("dbname = 'd2olmc1g1ep2um' user='lbklkxnrccbafn' host='ec2-18-210-51-239.compute-1.amazonaws.com' password='9ba141e9e03ccd7f51b9f445e0a471ae284159ab97b3997b85e6367a2417634c'")
 
-    cur = conn.cursor()
+    # cur = conn.cursor()
 
-    cur.execute("CREATE TABLE sales (id serial PRIMARY KEY, inventory_id integer, quantity varchar, created_at date);")
-    cur.execute("insert into sales (id, quantity, created_at, inventory_id) values (1, 260.05, '2018-10-27 20:19:50', 31);")
-    cur.execute("")
-    cur.execute("")
-    cur.execute("")
-    cur.execute("")
+    # cur.execute("CREATE TABLE sales (id serial PRIMARY KEY, inventory_id integer, quantity varchar, created_at date);")
+    # cur.execute("insert into sales (id, quantity, created_at, inventory_id) values (1, 260.05, '2018-10-27 20:19:50', 31);")
+    # cur.execute("")
+    # cur.execute("")
+    # cur.execute("")
+    # cur.execute("")
 
-    cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
-    SUM(sales.quantity) as "Total Sales" 
-    FROM sales
-    GROUP BY 
-    months 
-    ORDER BY 
-    months""")
-    records = cur.fetchall()
+    # cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
+    # SUM(sales.quantity) as "Total Sales" 
+    # FROM sales
+    # GROUP BY 
+    # months 
+    # ORDER BY 
+    # months""")
+    # records = cur.fetchall()
 
-    xlabels = []
-    sales = []
+    # xlabels = []
+    # sales = []
 
-    for i in records:
-        xlabels.append(i[0])
-        sales.append(i[1])
-
-
+    # for i in records:
+    #     xlabels.append(i[0])
+    #     sales.append(i[1])
 
 
-    line_chart = pygal.Line()
-    line_chart.title = 'Sales total in each month'
-    line_chart.x_labels = map(str, xlabels)
-    line_chart.add('Sales', sales)
-    line_data = line_chart.render_data_uri()
+
+
+    # line_chart = pygal.Line()
+    # line_chart.title = 'Sales total in each month'
+    # line_chart.x_labels = map(str, xlabels)
+    # line_chart.add('Sales', sales)
+    # line_data = line_chart.render_data_uri()
 
 
 
@@ -68,7 +68,7 @@ def home():
    
 
 
-    return render_template('index.html', pie_data=pie_data, line_data=line_data)
+    return render_template('index.html', pie_data=pie_data)
 
 @app.route('/person/<name>/<int:age>')
 def person(name, age):
