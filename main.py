@@ -8,9 +8,11 @@ app = Flask(__name__)
 @app.route('/')
 def home():
 
-    conn = psycopg2.connect("dbname = 'postgres' user='postgres' host='localhost' password='123456'")
+    conn = psycopg2.connect("dbname = 'd2olmc1g1ep2um' user='lbklkxnrccbafn' host='ec2-18-210-51-239.compute-1.amazonaws.com' password='9ba141e9e03ccd7f51b9f445e0a471ae284159ab97b3997b85e6367a2417634c'")
 
     cur = conn.cursor()
+
+    cur.execute("CREATE TABLE sales (id serial PRIMARY KEY, inventory_id integer, quantity varchar, created_at date);")
 
     cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
     SUM(sales.quantity) as "Total Sales" 
