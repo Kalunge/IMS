@@ -66,8 +66,8 @@ def home():
 
     pie_data = pie_chart.render_data_uri()
  
-   
-
+    conn.commit()
+    
 
     return render_template('index.html', pie_data=pie_data, line_data=line_data)
 
