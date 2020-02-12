@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block header %}
+    {% block title %} Data Visualization using Pygal {% endblock %}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div id="chart" class="col-md-6">
+            <embed type="image/svg+xml" src= {{ pie_data|safe }} />
+         </div>
+    
+         <div id="chart" class="col-md-6">
+            <embed src="{{ line_data|safe }}" type="image/svg+xml">
+        </div>
+
+    </div>
+</div>
+{% endblock %}
