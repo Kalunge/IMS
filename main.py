@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
 
-    conn = psycopg2.connect(database = "d2olmc1g1ep2um", user="lbklkxnrccbafn", host="ec2-18-210-51-239.compute-1.amazonaws.com", password="9ba141e9e03ccd7f51b9f445e0a471ae284159ab97b3997b85e6367a2417634c")
+    conn = psycopg2.connect("database=d2olmc1g1ep2um user=lbklkxnrccbafn host=ec2-18-210-51-239.compute-1.amazonaws.com password=9ba141e9e03ccd7f51b9f445e0a471ae284159ab97b3997b85e6367a2417634c")
 
     cur = conn.cursor()
 
