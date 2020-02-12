@@ -13,8 +13,19 @@ def home():
     cur = conn.cursor()
 
     cur.execute("CREATE TABLE sales (id serial PRIMARY KEY, inventory_id integer, quantity varchar, created_at date);")
-
     cur.execute("insert into sales (id, quantity, created_at, inventory_id) values (1, 260.05, '2018-10-27 20:19:50', 31);")
+    cur.execute("")
+    cur.execute("")
+    cur.execute("")
+    cur.execute("")
+
+    cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
+    SUM(sales.quantity) as "Total Sales" 
+    FROM sales
+    GROUP BY 
+    months 
+    ORDER BY 
+    months""")
     records = cur.fetchall()
 
     xlabels = []
