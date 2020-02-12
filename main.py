@@ -69,7 +69,7 @@ def home():
  
     
 
-    return render_template('index.html') #, pie_data=pie_data, line_data=line_data
+    return render_template('index.html',pie_data=pie_data, line_data=line_data)  
 
 @app.route('/person/<name>/<int:age>')
 def person(name, age):
