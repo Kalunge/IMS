@@ -30,7 +30,7 @@ def home():
     GROUP BY months 
     ORDER BY  months""")
     
-    cur.commit()
+    # cur.commit()
     records = cur.fetchall()
 
     x = []
