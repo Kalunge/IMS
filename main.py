@@ -963,8 +963,8 @@ def home():
 
     line_chart = pygal.Line()
     line_chart.title = 'Sales total in each month'
-    line_chart.x_labels = map(str, records)
-    # line_chart.add('Sales', sales)
+    line_chart.x_labels = map(str, xlabels)
+    line_chart.add('Sales', sales)
     line_data = line_chart.render_data_uri()
 
 
