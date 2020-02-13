@@ -951,20 +951,20 @@ def home():
     cur.commit()
     records = cur.fetchall()
 
-    xlabels = []
-    sales = []
+    x = []
+    y = []
 
     for i in records:
-        xlabels.append(i[0])
-        sales.append(i[1])
+        x.append(i[0])
+        y.append(i[1])
 
 
 
 
     line_chart = pygal.Line()
     line_chart.title = 'Sales total in each month'
-    line_chart.x_labels = map(str, xlabels)
-    line_chart.add('Sales', sales)
+    line_chart.x_labels = map(str, x)
+    line_chart.add('Sales', y)
     line_data = line_chart.render_data_uri()
 
 
