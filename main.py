@@ -946,12 +946,12 @@ def home():
     months""")
     records = cur.fetchall()
 
-    # xlabels = []
-    # sales = []
+    xlabels = []
+    sales = []
 
-    # for i in records:
-    #     xlabels.append(i[0])
-    #     sales.append(i[1])
+    for i in records:
+        xlabels.append(i[0])
+        sales.append(i[1])
 
 
 
