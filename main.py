@@ -935,15 +935,26 @@ def home():
     insert into stock (id, inv_id, stock, created_at) values (298, 142, 129, '2019-03-25 23:35:05');
     insert into stock (id, inv_id, stock, created_at) values (299, 133, 285, '2019-04-08 10:44:06');
     insert into stock (id, inv_id, stock, created_at) values (300, 103, 477, '2019-09-10 00:36:03'); """)
+    cur.commit()
+
 
     # cur.execute("SELECT * FROM sales")
+    # cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
+    # SUM(sales.quantity) as "Total Sales" 
+    # FROM sales
+    # GROUP BY 
+    # months 
+    # ORDER BY 
+    # months""")
+
     cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
     SUM(sales.quantity) as "Total Sales" 
-    FROM sales
+    FROM public.sales
     GROUP BY 
     months 
     ORDER BY 
     months""")
+    cur.commit()
     records = cur.fetchall()
 
     xlabels = []
