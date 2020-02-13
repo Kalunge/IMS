@@ -937,13 +937,13 @@ def home():
     insert into stock (id, inv_id, stock, created_at) values (300, 103, 477, '2019-09-10 00:36:03'); """)
 
     # cur.execute("SELECT * FROM sales")
-    # SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
-    # SUM(sales.quantity) as "Total Sales" 
-    # FROM sales
-    # GROUP BY 
-    # months 
-    # ORDER BY 
-    # months""")
+    cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
+    SUM(sales.quantity) as "Total Sales" 
+    FROM sales
+    GROUP BY 
+    months 
+    ORDER BY 
+    months""")
     records = cur.fetchall()
 
     # xlabels = []
