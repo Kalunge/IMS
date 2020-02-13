@@ -947,13 +947,7 @@ def home():
     # ORDER BY 
     # months""")
 
-    cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
-    SUM(sales.quantity) as "Total Sales" 
-    FROM public.sales
-    GROUP BY 
-    months 
-    ORDER BY 
-    months""")
+    cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,SUM(sales.quantity) as "Total Sales" FROM public.sales GROUP BY months ORDER BY  months""")
     cur.commit()
     records = cur.fetchall()
 
