@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import pygal
 import psycopg2
 
 app = Flask(__name__)
-# conn = psycopg2.connect("dbname='postgres' user='postgres' password='dbpass'")
+# conn = psycopg2.connect("dbname='postgres' user='postgres' password='123456'")
 
 @app.route('/', methods=['GET','POST'])
 def home():
@@ -72,31 +72,29 @@ def home():
     conn.commit()
     conn.close()
     
- 
     
 
     return render_template('index.html',pie_data=pie_data, line_data=line_data)  
 
-@app.route('/person/<name>/<int:age>')
-def person(name, age):
-    return f'{name} is {age} years old'
-
-
-@app.route('/numbers/<int:firstNum>/<int:secondNum>')
-def add(firstNum, secondNum):
-    summation = firstNum + secondNum
-    return f'the sum of {firstNum} and {secondNum} is {summation}'
-
-@app.route('/about')
-def about():
-    return render_template('about.html', title = 'This is about page')
-
-@app.route('/services')
-def services():
-    return render_template('services.html')
 
 
 
+
+
+@app.route('/inventories', methods=['POST','GET'])
+def inventories():
+    if request.method == 'POST':
+        name = request.form['name']
+        type = request.form['type']
+        buying_price = request.form['buying_price']
+        selling_price = request.form['selling_price']
+        
+        print(name)
+        print(type)
+        print(buying_price)
+        print(selling_price)
+        
+    return render_template('inventories.html')
 
 if __name__ == '__main__':
     app.debug = True
