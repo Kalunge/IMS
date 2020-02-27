@@ -2,22 +2,20 @@ from flask import Flask, render_template, request, url_for, redirect
 import pygal
 import psycopg2
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, Float, Numeric, ForeignKey, DateTime
-import datetime
+from configs.config import Development
 
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@127.0.0.1:5432/ims'
 db = SQLAlchemy(app)
 
+from models.inventories import Inventories
+from models.sales import Sales
+from models.stock import Stock
 
 # @app.before_first_request
 # def create_table():
 #     db.create_all()
-
-
-
-
-
 
 
 
@@ -31,54 +29,16 @@ def drop_db():
     db.drop_all()
     print('Database dropped')
 
-@app.cli.command('db_seed')
-def db_seed():    
-    bread = Inventories(name = 'Bread',
-    type = 'Product',
-    buying_price = 45,
-    selling_price = 56)
-
-    db.session.add(bread)
-    db.session.commit()
-    print('Database seeded')
-
-class Inventories(db.Model):
-    __tablename__ = 'new_inventories'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False, unique=True)
-    type = Column(String, nullable=False)
-    buying_price = Column(Integer)
-    selling_price = Column(Integer)
-
-    stock = db.relationship('Stock', backref='inventories', lazy=True)
-    sales = db.relationship('Sales', backref='inventories', lazy=True)
-
-
-class Stock(db.Model):
-    __tablename__ = 'new_stock'
-    id = Column(Integer, primary_key=True)
-    inv_id = Column(Integer, ForeignKey('new_inventories.id'))
-    stock = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-
-class Sales(db.Model):
-    id = Column(Integer, primary_key=True)
-    inv_id = Column(Integer, ForeignKey('new_inventories.id'))
-    quantity = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
 # conn = psycopg2.connect(dbname="ims", user="postgres", password="123456")
-conn = psycopg2.connect("dbname='postgres' user='postgres' host='localhost' password='123456'")
+conn = psycopg2.connect("dbname='ims' user='postgres' host='localhost' password='123456'")
+
+cur = conn.cursor()
+
 @app.route('/', methods=['GET','POST'])
 def home():
 
     # conn = psycopg2.connect("dbname=d2olmc1g1ep2um user=lbklkxnrccbafn host=ec2-18-210-51-239.compute-1.amazonaws.com password=9ba141e9e03ccd7f51b9f445e0a471ae284159ab97b3997b85e6367a2417634c")
-    cur = conn.cursor()
     # cur.execute("CREATE TABLE sales (id serial PRIMARY KEY, inventory_id integer, quantity varchar, created_at date);")
-
-    
-
 
     # cur.execute("SELECT * FROM sales")
     # cur.execute("""SELECT EXTRACT (MONTHS FROM sales.created_at) AS months,
@@ -94,6 +54,9 @@ def home():
     FROM public.sales 
     GROUP BY months 
     ORDER BY  months""")
+
+
+    # select  extract(year from s.created_at) as sales_year, count(s.id) from sales s join inventories i on s.inv_id=i.id join stock as sk on i.id=sk.inv_id group by sales_year order by sales_year
     
     records = cur.fetchall()
 
@@ -135,19 +98,29 @@ def home():
     pie_data = pie_chart.render_data_uri()
     conn.commit()
     conn.close()
-    
-    
+   
 
     return render_template('index.html', pie_data=pie_data, line_data=line_data )
-
-
-
-
 
 
 @app.route('/inventories', methods=['GET','POST'])
 def inventories():
     r = Inventories.query.all()
+
+    cur.execute("""SELECT inv_id, sum(quantity) as "stock"
+	FROM ((SELECT st.inv_id, sum(stock) as "quantity"
+	FROM public.new_stock as st
+	GROUP BY inv_id) union all
+		 (SELECT sa.inv_id, - sum(quantity) as "quantity"
+	FROM public.new_sales as sa
+	GROUP BY inv_id) 
+		 ) stsa
+	GROUP BY inv_id
+	ORDER BY inv_id;""")
+
+    remstock = cur.fetchall()
+    for each in remstock:
+        print(each[1])
 
     if request.method == 'POST':
         name = request.form['name']
@@ -168,10 +141,29 @@ def inventories():
     #     print(buying_price)
     #     print(selling_price)
         
-    return render_template('inventories.html', record=r)
+    return render_template('inventories.html', record=r, remstock=remstock)
 
 
-     
+@app.route('/add_stock/<inv_id>', methods=['GET', 'POST'])
+def add_stock(inv_id):
+    if request.method == 'POST':
+        stock = request.form['stock']
+        print(inv_id)
+        stock = Stock(inv_id=inv_id, stock=stock)
+        db.session.add(stock)
+        db.session.commit()
+
+    return redirect(url_for('inventories'))
+
+@app.route('/make_sale/<inv_id>')
+def make_sale(inv_id):
+    if request.method == 'POST':
+        total = request.form['quantity']
+        sale = Sales(inv_id=inv_id, quantity=total )
+        db.session.add(sale)
+        db.session.commit()
+
+    return redirect(url_for('inventories'))
     
 
 if __name__ == '__main__':
